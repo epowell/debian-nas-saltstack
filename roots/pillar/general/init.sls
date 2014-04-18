@@ -1,2 +1,2 @@
 general:
-  timezone: Europe/Kiev
+  timezone: US/Central

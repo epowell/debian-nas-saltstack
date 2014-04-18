@@ -7,8 +7,6 @@ general:
       - mc
       - vim
       - zsh
-      - wireless-tools
-      - wpasupplicant
       - openssh-server
       - openssh-client
       - adduser
@@ -25,19 +23,17 @@ general:
       - passwd
       - tar
       - wget
-      - xz-utils
       - hdparm
       - smartmontools
-      - htop
       - dosfstools
       - ntfs-3g
       - parted
       - unzip
 
-#system:
-#    network.system:
-#      - enabled: True
-#      - hostname: mediacenter
+system:
+    network.system:
+      - enabled: True
+      - hostname: vigilance
 
 /etc/timezone:
   cmd.run:
@@ -47,4 +43,3 @@ include:
   {% if grains['virtual'] == 'VirtualBox' %}
   - general.virtualbox-guest
   {% endif %}
-  - openssl
