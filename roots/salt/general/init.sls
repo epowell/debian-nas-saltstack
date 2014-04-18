@@ -39,6 +39,32 @@ system:
   cmd.run:
    - name: echo "{{ pillar.get('general', {})['timezone'] }}" > /etc/timezone
 
+/tmp:
+  mount.mounted:
+    - fstype: tmpfs
+    - opts: defaults,noatime,mode=1777
+    - mkmnt: True
+/var/tmp:
+  mount.mounted:
+    - fstype: tmpfs
+    - opts: defaults,noatime,mode=1777
+    - mkmnt: True
+/var/log:
+  mount.mounted:
+    - fstype: tmpfs
+    - opts: defaults,noatime,mode=0755
+    - mkmnt: True
+/var/log/apt:
+  mount.mounted:
+    - fstype: tmpfs
+    - opts: defaults,noatime
+    - mkmnt: True
+/var/cache:
+  mount.mounted:
+    - fstype: unionfs
+    - opts: dirs=/tmp:/var/cache=ro
+    - mkmnt: True
+
 include:
   {% if grains['virtual'] == 'VirtualBox' %}
   - general.virtualbox-guest
