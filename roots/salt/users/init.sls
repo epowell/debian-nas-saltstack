@@ -1,5 +1,5 @@
 {# Adds new users. #}
-{% for user, parameters in pillar.get('users', {})['add_users'].items() -%}
+{% for user, parameters in pillar.get('users', {}).items() -%}
 {{user}}:
   user:
     - present
@@ -11,23 +11,24 @@
       - pkg: general
     - groups:
       - {{user}}
+    - removegroups: False
   group:
     - present
     - require:
       - pkg: general
-  {% if parameters['publickey'] %}
+  {% if parameters.get("publickey', False) %}
   ssh_auth:
     - present
     - user: {{user}}
-    - source: {{parameters['publickey']}}
+    - source: {{parameters["publickey']}}
     - require:
       - user: {{user}}
   {% endif %}
 
-{% if parameters['password'] -%}
+{% if parameters.get('password', False) -%}
 set_{{user}}_passwd:
   cmd.run:
-   - name: echo -e "{{parameters['password']}}\n{{parameters['password']}}\n" | passwd {{user}}
+   - name: echo -e "{{parameters["password']}}\n{{parameters["password']}}\n" | passwd {{user}}
    - require:
      - user: {{user}}
      - pkg: general
@@ -37,7 +38,7 @@ set_{{user}}_passwd:
   file.directory:
     - user: {{user}}
     - group: {{user}}
-    {% if parameters['password'] or parameters['publickey'] %}
+    {% if parameters.get("password', False) or parameters.get("publickey', False) %}
     - mode: 750
     {% else %}
     - mode: 770
@@ -46,7 +47,7 @@ set_{{user}}_passwd:
     - require:
       - user: {{user}}
 
-{% if parameters['sudo'] and parameters['shell'] %}
+{% if parameters.get('sudo', False) and parameters.get('shell', False) %}
 include:
   - sudo
 
@@ -74,23 +75,3 @@ extend:
       - user: {{user}}
 {% endif %}
 {%- endfor %}
-
-{# Deletes deleted users. #}
-{% if pillar.get('users', {})['delete_users'] -%}
-{% for user in pillar.get('users', {})['delete_users'] -%}
-/etc/sudoers.d/{{user}}:
-  file:
-    - absent
-    - require:
-      - user: {{user}}
-{{user}}:
-  user:
-    - absent
-    - purge: True
-    - force: True
-  group:
-    - absent
-    - require:
-      - user: {{user}}
-{%- endfor %}
-{%- endif %}

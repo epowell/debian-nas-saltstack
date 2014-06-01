@@ -4,9 +4,7 @@ general:
       - tzdata
       - util-linux
       - git-core
-      - mc
       - vim
-      - zsh
       - openssh-server
       - openssh-client
       - adduser
@@ -19,7 +17,6 @@ general:
       - make
       - login
       - mount
-      - nano
       - passwd
       - tar
       - wget
@@ -33,12 +30,13 @@ general:
 system:
     network.system:
       - enabled: True
-      - hostname: vigilance
+      - hostname: {{ pillar.get('general', {})['hostname'] }}
 
 /etc/timezone:
   cmd.run:
    - name: echo "{{ pillar.get('general', {})['timezone'] }}" > /etc/timezone
 
+{% if pillar.get('general', {})['ssd'] %}
 /tmp:
   mount.mounted:
     - fstype: tmpfs
@@ -64,6 +62,7 @@ system:
     - fstype: unionfs
     - opts: dirs=/tmp:/var/cache=ro
     - mkmnt: True
+{% endif %}
 
 include:
   {% if grains['virtual'] == 'VirtualBox' %}
