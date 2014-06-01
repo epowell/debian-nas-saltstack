@@ -16,8 +16,8 @@ Additionally one may use [salty-vagrant](https://github.com/saltstack/salty-vagr
 * Saltstack 2014.1.1
 
 # Install Packages
-$sudo add-apt-repository ppa:saltstack/salt
-$sudo apt-get install salt-minion
+    $sudo add-apt-repository ppa:saltstack/salt
+    $sudo apt-get install salt-minion
     
 # Customize Salt states
 Edit pillar data to fit your needs.
@@ -28,7 +28,7 @@ Edit pillar data to fit your needs.
 - Copy _roots/_ folder contents under _/srv/_
 
 # Run
-salt-call --local state.highstate
+    salt-call --local state.highstate
 
 # Known issues
 
