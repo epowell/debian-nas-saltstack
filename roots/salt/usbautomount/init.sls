@@ -17,7 +17,7 @@ udev:
       - pkg: udev
       - pkg: ntfs-3g
 
-{% for user, parameters in pillar.get('users', {})['add_users'].items() -%}
+{% for user, parameters in pillar.get('users', {}).items() -%}
 {% if parameters['home'] %}
 {{parameters['home']}}/devices:
   file.symlink:
