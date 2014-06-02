@@ -19,7 +19,7 @@ transmission-cli:
   pkg:
     - installed
 
-/var/debian-transmission/downloads:
+{{pillar.get('transmission', {})['download_dir']}}:
   file.directory:
     - user: debian-transmission
     - group: debian-transmission
@@ -28,7 +28,7 @@ transmission-cli:
     - require:
       - pkg: transmission-daemon
 
-/var/debian-transmission/incomplete:
+{{pillar.get('transmission', {})['incomplete_dir']}}:
   file.directory:
     - user: debian-transmission
     - group: debian-transmission
@@ -47,11 +47,9 @@ transmission-cli:
     - mode: 500
     - require:
       - pkg: transmission-daemon
-      - file: /var/debian-transmission/downloads
-      - file: /var/debian-transmission/incomplete
 {% endif %}
 
-{% for user, parameters in pillar.get('users', {})['add_users'].items() -%}
+{% for user, parameters in pillar.get('users', {}).items() -%}
 {% if parameters['torrents'] %}
 transmission_add_to_group_{{user}}:
   cmd.run:

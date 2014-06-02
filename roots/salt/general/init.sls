@@ -26,6 +26,7 @@ general:
       - ntfs-3g
       - parted
       - unzip
+      - btrfs
 
 system:
     network.system:
