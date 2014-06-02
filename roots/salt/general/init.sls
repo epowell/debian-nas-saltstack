@@ -26,7 +26,7 @@ general:
       - ntfs-3g
       - parted
       - unzip
-      - btrfs
+      - btrfs-tools
 
 system:
     network.system:
@@ -43,29 +43,34 @@ system:
     - fstype: tmpfs
     - opts: defaults,noatime,mode=1777
     - mkmnt: True
+    - device: tmpfs
 /var/tmp:
   mount.mounted:
     - fstype: tmpfs
     - opts: defaults,noatime,mode=1777
     - mkmnt: True
+    - device: tmpfs
 /var/log:
   mount.mounted:
     - fstype: tmpfs
     - opts: defaults,noatime,mode=0755
     - mkmnt: True
+    - device: tmpfs
 /var/log/apt:
   mount.mounted:
     - fstype: tmpfs
     - opts: defaults,noatime
     - mkmnt: True
-/var/cache:
-  mount.mounted:
-    - fstype: unionfs
-    - opts: dirs=/tmp:/var/cache=ro
-    - mkmnt: True
+    - device: tmpfs
+#/var/cache:
+#  mount.mounted:
+#    - fstype: unionfs
+#    - opts: dirs=/tmp:/var/cache=ro
+#    - mkmnt: True
+#    - device: unionfs
 {% endif %}
 
+{% if grains['virtual'] == 'VirtualBox' %}
 include:
-  {% if grains['virtual'] == 'VirtualBox' %}
   - general.virtualbox-guest
-  {% endif %}
+{% endif %}

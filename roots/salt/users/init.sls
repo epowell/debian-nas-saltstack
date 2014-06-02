@@ -16,11 +16,11 @@
     - present
     - require:
       - pkg: general
-  {% if parameters.get("publickey', False) %}
+  {% if parameters.get("publickey", False) %}
   ssh_auth:
     - present
     - user: {{user}}
-    - source: {{parameters["publickey']}}
+    - source: {{parameters["publickey"]}}
     - require:
       - user: {{user}}
   {% endif %}
@@ -28,7 +28,7 @@
 {% if parameters.get('password', False) -%}
 set_{{user}}_passwd:
   cmd.run:
-   - name: echo -e "{{parameters["password']}}\n{{parameters["password']}}\n" | passwd {{user}}
+   - name: echo -e "{{parameters["password"]}}\n{{parameters["password"]}}\n" | passwd {{user}}
    - require:
      - user: {{user}}
      - pkg: general
@@ -38,7 +38,7 @@ set_{{user}}_passwd:
   file.directory:
     - user: {{user}}
     - group: {{user}}
-    {% if parameters.get("password', False) or parameters.get("publickey', False) %}
+    {% if parameters.get("password", False) or parameters.get("publickey", False) %}
     - mode: 750
     {% else %}
     - mode: 770

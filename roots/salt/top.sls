@@ -6,4 +6,4 @@ base:
     - users
     - samba.shares
     - transmission
-    - rsync
+#    - rsync

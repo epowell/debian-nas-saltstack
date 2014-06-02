@@ -1,5 +1,5 @@
 general:
   timezone: US/Central
-  hostname: vigilance
+  hostname: vigilance.flowmage.dyndns.org
   ssd: True
   workgroup: UNIVERSE
