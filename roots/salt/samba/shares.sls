@@ -14,11 +14,11 @@ include:
       - pkg: samba
     - names:
       - smbpasswd -Lan {{ pillar.get('samba', {})['guest_username'] }}
-{% for user, parameters in pillar.get('users', {})['add_users'].items() %}
+{% for user, parameters in pillar.get('users', {}).items() %}
 {% if parameters['samba'] %}
-   {% if parameters['password'] %}
+   {% if parameters.get('password', False) %}
       - echo -e "{{parameters['password']}}\n{{parameters['password']}}\n" | smbpasswd -La -s {{user}}
-   {% if parameters['samba_guest_readonly'] %}
+   {% if parameters.get('samba_guest_readonly', True) %}
       - usermod -a -G {{user}} {{ pillar.get('samba', {})['guest_username'] }}
    {% else %}
       - gpasswd -d {{ pillar.get('samba', {})['guest_username'] }} {{user}} || true
@@ -30,7 +30,7 @@ include:
 {% endif %}
 {% endfor %}
 
-{% for user, parameters in pillar.get('users', {})['add_users'].items() %}
+{% for user, parameters in pillar.get('users', {}).items() %}
 {% if parameters['samba'] %}
 {{parameters['home']}}/.recycle:
   file.directory:
