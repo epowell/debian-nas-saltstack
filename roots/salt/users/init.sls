@@ -1,77 +1,97 @@
-{# Adds new users. #}
-{% for user, parameters in pillar.get('users', {}).items() -%}
-{{user}}:
-  user:
-    - present
-    - gid_from_name: True
-    - home: {{parameters['home']}}
-    - shell: {{parameters['shell']}}
-    - require:
-      - group: {{user}}
-      - pkg: general
-    - groups:
-      - {{user}}
-    - removegroups: False
-  group:
-    - present
-    - require:
-      - pkg: general
-  {% if parameters.get("publickey", False) %}
-  ssh_auth:
-    - present
-    - user: {{user}}
-    - source: {{parameters["publickey"]}}
-    - require:
-      - user: {{user}}
-  {% endif %}
-
-{% if parameters.get('password', False) -%}
-set_{{user}}_passwd:
-  cmd.run:
-   - name: echo -e "{{parameters["password"]}}\n{{parameters["password"]}}\n" | passwd {{user}}
-   - require:
-     - user: {{user}}
-     - pkg: general
-{%- endif %}
-
-{{ parameters['home'] }}:
-  file.directory:
-    - user: {{user}}
-    - group: {{user}}
-    {% if parameters.get("password", False) or parameters.get("publickey", False) %}
-    - mode: 750
-    {% else %}
-    - mode: 770
+{% for username, user in pillar['users'].iteritems() %}
+{{ username }}:
+  user.present:
+    - fullname: {{ user['fullname'] }}
+    {% if user.get('shell', '') %}
+    - shell: {{ user['shell'] }}
     {% endif %}
+    - home: {{ user['home'] }}
+    {% if user.get('password', '') %}
+    - password: {{ user['password'] }}
+    - enforce_password: False
+    {% endif %}
+    {% if user.get('groups', []) %}
+    - groups:
+      {% for grp in user['groups'] %}
+      - {{ grp }}
+      {% endfor %}
+    {% endif %}
+    - remove_groups: False
+  {% if user.get('ssh_key', []) %}
+  ssh_auth.present:
+    - user: {{ username }}
+    - comment: {{ user['email'] }}
+    - enc: {{ user['ssh_key_type'] }}
+    - names:
+      - {{ user['ssh_key'] }}
+    - require:
+      - user: {{ username }}
+  {% endif %}
+{{ username }}-editor:
+  file.append:
+    - name: {{ user['home'] }}/.bashrc
+    - text: export EDITOR={{ user['editor'] }}
+    - require:
+      - user: {{ username }}
+
+{% if user.get('srcdir', '') %}
+{{ user['home'] }}/{{ user['srcdir'] }}:
+  file.directory:
+    - user: {{ username }}
+    - group: {{ username }}
     - makedirs: True
     - require:
-      - user: {{user}}
-
-{% if parameters.get('sudo', False) and parameters.get('shell', False) %}
-include:
-  - sudo
-
-extend:
-  sudo:
-    file:
-     - managed
-     - name: /etc/sudoers.d/{{user}}
-     - source: salt://users/sudoer
-     - template: jinja
-     - user: root
-     - group: root
-     - mode: 440
-     - require:
-       - pkg: sudo
-       - user: {{user}}
-     - context:
-       username: {{user}}
-       parameters: {{parameters['sudo']}}
-{% else %}
-/etc/sudoers.d/{{user}}:
-  file:
-    - absent
-    - require:
-      - user: {{user}}
+      - user: {{ username }}
 {% endif %}
-{%- endfor %}
+
+{% if user.get('bindir', '') %}
+{{ user['home'] }}/{{ user['bindir'] }}:
+  file.directory:
+    - user: {{ username }}
+    - group: {{ username }}
+    - makedirs: True
+    - require:
+      - user: {{ username }}
+
+{{ username }}-binpath:
+  file.append:
+    - name: {{ user['home'] }}/.bashrc
+    - text: export PATH=$PATH:{{ user['home'] }}/{{ user['bindir'] }}
+    - require:
+      - file: {{ user['home'] }}/{{ user['bindir'] }}
+      - user: {{ username }}
+{% endif %}
+{% if user.get('bashrc', '') %}
+{{ username }}-custom-bashrc:
+  file.blockreplace:
+    - name: {{ user['home'] }}/.bashrc
+    - marker_start: "# START custom .bashrc for {{ username  }} -DO-NOT-EDIT-"
+    - marker_end: "# END custom .bashrc for {{ username }} --"
+    - content: "{{ user['bashrc'] }}"
+    - append_if_not_found: True
+    - show_changes: False
+    - backup: False
+{% endif %}
+
+{% if user.get('aliases', '') %}
+{{ user['home'] }}/.bash_aliases:
+  file.managed:
+    - contents: |
+    {% for cmd, content in user['aliases'].iteritems() %}
+                  alias {{ cmd }}="{{ content }}"
+    {% endfor %}
+    - user: {{ username }}
+    - group: {{ username }}
+    - mode: 600
+    - create: True
+{% endif %}
+
+{% if user.get('packages', []) %}
+{% for packname in user['packages'] %}
+{{ username }}-{{ packname }}:
+  pkg.installed:
+    - name: {{ packname }}
+{% endfor %}
+{% endif %}
+
+{% endfor %}

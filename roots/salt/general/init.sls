@@ -4,7 +4,6 @@ general:
       - tzdata
       - util-linux
       - git-core
-      - vim
       - openssh-server
       - openssh-client
       - adduser
