@@ -23,7 +23,7 @@ transmission-cli:
   file.directory:
     - user: debian-transmission
     - group: debian-transmission
-    - mode: 777 
+    - mode: 775
     - makedirs: True
     - require:
       - pkg: transmission-daemon
@@ -32,7 +32,7 @@ transmission-cli:
   file.directory:
     - user: debian-transmission
     - group: debian-transmission
-    - mode: 777 
+    - mode: 775
     - makedirs: True
     - require:
       - pkg: transmission-daemon
@@ -62,7 +62,7 @@ transmission_add_to_group_{{user}}:
   file.directory:
     - user: debian-transmission
     - group: debian-transmission
-    - mode: 777
+    - mode: 775
     - makedirs: True
     - require:
       - pkg: transmission-daemon

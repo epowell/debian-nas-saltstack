@@ -94,4 +94,13 @@
 {% endfor %}
 {% endif %}
 
+{% if user.get('mediashare', '') %}
+{{ user['home'] }}/media:
+  file.symlink:
+    - target: /storage/media
+    - require:
+      - user: {{ username }}
+      - mount: /storage/media
+{% endif %}
+
 {% endfor %}
