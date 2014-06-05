@@ -109,6 +109,9 @@
   file.symlink:
     - target: /storage/media
     - makedirs: True
+    - user: root
+    - group: {{ username }}
+    - mode: 750
     - require:
       - user: {{ username }}
       - mount: /storage/media
@@ -119,6 +122,9 @@
   file.symlink:
     - target: /storage/{{ username }}
     - makedirs: True
+    - user: root
+    - group: {{ username }}
+    - mode: 750
     - require:
       - user: {{ username }}
       - mount: /storage/{{ username }}

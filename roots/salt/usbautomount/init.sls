@@ -19,9 +19,12 @@ udev:
 
 {% for user, parameters in pillar.get('users', {}).items() -%}
 {% if parameters['home'] %}
-{{parameters['home']}}/devices:
+{{parameters['home']}}/share/devices:
   file.symlink:
     - target: /media
+    - user: root
+    - group: {{ user }}
+    - mode: 750
     - require:
       - user: {{user}}
       - pkg: udev
