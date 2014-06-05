@@ -16,6 +16,7 @@ include:
       - smbpasswd -Lan {{ pillar.get('samba', {})['guest_username'] }}
 {% for user, parameters in pillar.get('users', {}).items() %}
 {% if parameters['samba'] %}
+      - usermod -a -G sambashare {{user}}
    {% if parameters.get('password', False) %}
       - echo -e "{{parameters['password']}}\n{{parameters['password']}}\n" | smbpasswd -La -s {{user}}
    {% if parameters.get('samba_guest_readonly', True) %}
@@ -28,7 +29,9 @@ include:
       - usermod -a -G {{user}} {{ pillar.get('samba', {})['guest_username'] }}
    {% endif %}
 {% endif %}
+{% endfor %}
 
+{% for user, parameters in pillar.get('users', {}).items() %}
 {{parameters['home']}}/.recycle:
   file.absent
 {% endfor %}

@@ -1,5 +1,3 @@
 include:
-  - users.epowell:
-      key: users
-  - users.acato:
+  - users.all_users:
       key: users
