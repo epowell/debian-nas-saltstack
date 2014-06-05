@@ -26,6 +26,7 @@ general:
       - parted
       - unzip
       - btrfs-tools
+      - iftop
 
 system:
     network.system:
