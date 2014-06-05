@@ -95,12 +95,23 @@
 {% endif %}
 
 {% if user.get('mediashare', '') %}
-{{ user['home'] }}/media:
+{{ user['home'] }}/share/media:
   file.symlink:
     - target: /storage/media
+    - makedirs: True
     - require:
       - user: {{ username }}
       - mount: /storage/media
+{% endif %}
+
+{% if user.get('backups', '') %}
+{{ user['home'] }}/share/backup:
+  file.symlink:
+    - target: /storage/{{ username }}
+    - makedirs: True
+    - require:
+      - user: {{ username }}
+      - mount: /storage/{{ username }}
 {% endif %}
 
 {% endfor %}
