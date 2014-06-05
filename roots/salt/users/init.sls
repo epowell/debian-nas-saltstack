@@ -94,6 +94,16 @@
 {% endfor %}
 {% endif %}
 
+{% if user.get('samba', '') %}
+{{ user['home'] }}/share:
+  file.directory:
+    - user: root
+    - group: {{ username }}
+    - mode: 750
+    - require:
+      - user: {{ username }}
+{% endif %}
+
 {% if user.get('mediashare', '') %}
 {{ user['home'] }}/share/media:
   file.symlink:
