@@ -28,5 +28,6 @@ udev:
     - require:
       - user: {{user}}
       - pkg: udev
+      - file: {{parameters['home']}}/share
 {% endif %}
 {%- endfor %}
