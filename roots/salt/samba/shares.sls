@@ -28,21 +28,7 @@ include:
       - usermod -a -G {{user}} {{ pillar.get('samba', {})['guest_username'] }}
    {% endif %}
 {% endif %}
-{% endfor %}
 
-{% for user, parameters in pillar.get('users', {}).items() %}
-{% if parameters['samba'] %}
-{{parameters['home']}}/.recycle:
-  file.directory:
-    - user: {{user}}
-    - group: {{user}}
-    - mode: 777
-    - makedirs: True
-    - require:
-      - pkg: samba
-      - user: {{user}}
-{% else %}
 {{parameters['home']}}/.recycle:
   file.absent
-{% endif %}
 {% endfor %}
