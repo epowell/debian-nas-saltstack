@@ -7,7 +7,7 @@ This is a set of [saltstack](http://saltstack.com/) recipes to set up and config
 * users
 * samba shares
 * transmission
-* mediacenter (minidlna)
+* plexmediaserver
 
 Additionally one may use [salty-vagrant](https://github.com/saltstack/salty-vagrant) to deploy and test the configuration in virtual machine.
 
