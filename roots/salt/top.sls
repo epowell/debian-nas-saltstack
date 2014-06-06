@@ -1,6 +1,7 @@
 base:
   '*':
     - general
+    - smart
     - usbautomount
     - logrotate
     - users

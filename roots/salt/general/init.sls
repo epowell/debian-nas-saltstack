@@ -20,7 +20,6 @@ general:
       - tar
       - wget
       - hdparm
-      - smartmontools
       - dosfstools
       - ntfs-3g
       - parted
