@@ -1,8 +1,9 @@
 samba-common-bin:
   pkg.installed
 
-samba:
+smbd:
   pkg:
+    - name: samba
     - installed
     - require:
       - pkg: samba-common-bin
