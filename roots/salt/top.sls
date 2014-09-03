@@ -9,4 +9,5 @@ base:
     - transmission
     - vim
     - storage
+    - plex
 #    - rsync
