@@ -38,3 +38,22 @@
     - opts: defaults,subvol=users/{{username}}/{{username}},noatime
 {% endif %}
 {% endfor %}
+
+/sbin/btrfs scrub start /media/btrfs:
+  cron.present:
+    - identifier: BTRFSSCRUB
+    - user: root
+    - minute: 0
+    - hour: 3
+    - daymonth: 1
+
+/usr/bin/btrfsemail.sh:
+  file.managed:
+    - source: salt://storage/btrfsemail.sh
+  cron.present:
+    - identifier: BTRFSEMAIL
+    - user: root
+    - minute: 0
+    - hour: 5
+    - daymonth: 1
+

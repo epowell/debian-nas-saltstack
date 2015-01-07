@@ -11,6 +11,12 @@
     - require:
       - pkg: smartmontools
 
+/etc/smartmontools/run.d/10smartmail.sh:
+  file.managed:
+    - source: salt://smart/smartmail.sh
+    - require:
+      - pkg: smartmontools
+
 smartmontools:
   pkg.installed:
     - name: smartmontools
