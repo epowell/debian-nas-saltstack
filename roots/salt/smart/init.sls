@@ -14,6 +14,8 @@
 /etc/smartmontools/run.d/10smartmail.sh:
   file.managed:
     - source: salt://smart/smartmail.sh
+    - template: jinja
+    - context: {{ pillar['users']['epowell']['mailgun'] }}
     - require:
       - pkg: smartmontools
 

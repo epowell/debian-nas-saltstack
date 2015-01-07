@@ -50,6 +50,8 @@
 /usr/bin/btrfsemail.sh:
   file.managed:
     - source: salt://storage/btrfsemail.sh
+    - template: jinja
+    - context: {{ pillar['users']['epowell']['mailgun'] }}
   cron.present:
     - identifier: BTRFSEMAIL
     - user: root
