@@ -16,6 +16,7 @@
     - source: salt://smart/smartmail.sh
     - template: jinja
     - context: {{ pillar['users']['epowell']['mailgun'] }}
+    - mode: 744
     - require:
       - pkg: smartmontools
 

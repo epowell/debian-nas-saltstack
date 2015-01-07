@@ -52,6 +52,7 @@
     - source: salt://storage/btrfsemail.sh
     - template: jinja
     - context: {{ pillar['users']['epowell']['mailgun'] }}
+    - mode: 744
   cron.present:
     - identifier: BTRFSEMAIL
     - user: root
